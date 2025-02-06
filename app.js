@@ -10,14 +10,17 @@ mongooseConnection();
 
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
+app.use(cors());
 app.use(
 	cors({
-		origin: '*', // Temporary for testing
+		origin: [
+			'https://linked-in-clonify.netlify.app',
+			'http://localhost:3000',
+			'http://68.183.112.7',
+			'http://localhost:5173/',
+		],
 		methods: 'GET,HEAD,PUT,PATCH,POST,DELETE',
 		credentials: true,
-		allowedHeaders:
-			'Origin, X-Requested-With, Content-Type, Accept, Authorization',
-		exposedHeaders: 'Authorization',
 	})
 );
 
