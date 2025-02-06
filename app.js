@@ -10,7 +10,8 @@ mongooseConnection();
 
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
-app.use(
+app.options(
+	'*',
 	cors({
 		origin: [
 			'http://localhost:3000',
@@ -22,7 +23,6 @@ app.use(
 		credentials: true,
 	})
 );
-
 app.use('/api/v1', require('./routes/index'));
 
 app.listen(port, () => {
