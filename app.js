@@ -12,7 +12,7 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 app.use(
 	cors({
-		origin: 'https://linked-in-clonify.netlify.app',
+		origin: 'https://linked-in-clonify.netlify.app/login',
 		methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
 		allowedHeaders: ['Content-Type', 'Authorization'],
 	})
