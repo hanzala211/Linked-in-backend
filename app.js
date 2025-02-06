@@ -10,19 +10,14 @@ mongooseConnection();
 
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
-app.options(
-	'*',
+app.use(
 	cors({
-		origin: [
-			'http://localhost:3000',
-			'http://68.183.112.7',
-			'http://localhost:5173',
-			'https://linked-in-clonify.netlify.app',
-		],
+		origin: ['*'],
 		methods: 'GET,HEAD,PUT,PATCH,POST,DELETE',
 		credentials: true,
 	})
 );
+
 app.use('/api/v1', require('./routes/index'));
 
 app.listen(port, () => {
