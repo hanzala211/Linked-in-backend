@@ -12,12 +12,7 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 app.use(
 	cors({
-		origin: [
-			'http://localhost:3000',
-			'http://68.183.112.7',
-			'http://localhost:5173',
-			'https://linked-in-clonify.netlify.app',
-		],
+		origin: '*', // Temporary for testing
 		methods: 'GET,HEAD,PUT,PATCH,POST,DELETE',
 		credentials: true,
 		allowedHeaders:
