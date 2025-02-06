@@ -16,7 +16,7 @@ app.use(
 			'http://localhost:3000',
 			'http://68.183.112.7',
 			'http://localhost:5173',
-			'https://linked-in-clonify.netlify.app/',
+			'https://linked-in-clonify.netlify.app',
 		],
 		methods: 'GET,HEAD,PUT,PATCH,POST,DELETE',
 		credentials: true,
