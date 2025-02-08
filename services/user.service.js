@@ -78,3 +78,35 @@ module.exports.removeBanner = async (id) => {
 		console.log(error);
 	}
 };
+
+module.exports.followUser = async (followedId, userId) => {
+	try {
+		const updateMyUser = await User.findByIdAndUpdate(userId, {
+			$push: { following: followedId },
+			$inc: { followingCount: 1 },
+		});
+		const updateOtherUser = await User.findByIdAndUpdate(followedId, {
+			$push: { followers: userId },
+			$inc: { followerCount: 1 },
+		});
+		return updateMyUser;
+	} catch (error) {
+		console.log(error);
+	}
+};
+
+module.exports.unFollowUser = async (followedId, userId) => {
+	try {
+		const updateMyUser = await User.findByIdAndUpdate(userId, {
+			$pull: { following: followedId },
+			$inc: { followingCount: -1 },
+		});
+		const updateOtherUser = await User.findByIdAndUpdate(followedId, {
+			$pull: { followers: userId },
+			$inc: { followerCount: -1 },
+		});
+		return updateMyUser;
+	} catch (error) {
+		console.log(error);
+	}
+};

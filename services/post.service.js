@@ -145,3 +145,14 @@ module.exports.getComments = async (postId, page, limit) => {
 		console.log(error);
 	}
 };
+
+module.exports.getSixPosts = async (userId) => {
+	try {
+		const foundPosts = await Post.find({
+			postBy: userId,
+		}).limit(3);
+		return foundPosts;
+	} catch (error) {
+		console.log(error);
+	}
+};

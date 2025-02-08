@@ -49,6 +49,28 @@ const userScheema = mongoose.Schema({
 		type: String,
 		default: null,
 	},
+	followers: [
+		{
+			type: mongoose.Schema.Types.ObjectId,
+			ref: 'User',
+			default: [],
+		},
+	],
+	followerCount: {
+		type: Number,
+		default: 0,
+	},
+	following: [
+		{
+			type: mongoose.Schema.Types.ObjectId,
+			ref: 'User',
+			default: [],
+		},
+	],
+	followingCount: {
+		type: Number,
+		default: 0,
+	},
 	experience: {
 		type: [
 			{

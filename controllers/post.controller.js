@@ -151,3 +151,17 @@ module.exports.getComments = async (req, res) => {
 		res.status(500).send({ status: 'Server Error' });
 	}
 };
+
+module.exports.getSixPosts = async (req, res) => {
+	try {
+		const userId = req.params.id;
+		let foundPosts = await postService.getSixPosts(userId);
+		if (!foundPosts) return res.send({ status: 'Posts Not Found' });
+		return res.send({
+			status: 'Posts Found',
+			posts: foundPosts,
+		});
+	} catch (error) {
+		console.log(error);
+	}
+};

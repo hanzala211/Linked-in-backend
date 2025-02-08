@@ -5,17 +5,42 @@ module.exports.editProfile = async (req, res) => {
 	try {
 		const id = req.user._id;
 		const data = req.body;
+		const { educations, experience } = data;
+
+		const isValidDateRange = (startDate, endDate) => {
+			if (!startDate) return false;
+			if (endDate === 'Present') return true;
+			if (!endDate) return false;
+			return new Date(endDate) >= new Date(startDate);
+		};
+
+		let isInvalid = false;
+		educations?.forEach((item) => {
+			if (!isValidDateRange(item.startDate, item.endDate)) {
+				isInvalid = true;
+			}
+		});
+		experience?.forEach((item) => {
+			if (!isValidDateRange(item.startDate, item.endDate)) {
+				isInvalid = true;
+			}
+		});
+		if (isInvalid) {
+			return res.json({
+				status: 'Error',
+				message: 'End Date cannot be less than Start Date',
+			});
+		}
 		const editProfile = await userService.editProfile(data, id);
-		if (!editProfile) return res.send({ status: 'Failed' });
-		return res.send({
+		if (!editProfile) return res.status(500).json({ status: 'Failed' });
+
+		return res.json({
 			status: 'Profile Updated Successfully',
 			data: editProfile,
 		});
 	} catch (error) {
-		console.log(error);
-		res.send({
-			status: 'Server Error',
-		});
+		console.error(error);
+		res.status(500).json({ status: 'Server Error' });
 	}
 };
 
@@ -76,6 +101,9 @@ module.exports.removeProfilePic = async (req, res) => {
 		});
 	} catch (error) {
 		console.log(error);
+		res.send({
+			status: 'Server Error',
+		});
 	}
 };
 
@@ -95,5 +123,44 @@ module.exports.removeBanner = async (req, res) => {
 		});
 	} catch (error) {
 		console.log(error);
+		res.send({
+			status: 'Server Error',
+		});
+	}
+};
+
+module.exports.followUser = async (req, res) => {
+	try {
+		const userId = req.user._id;
+		const followedId = req.params.id;
+		const updateFollow = await userService.followUser(followedId, userId);
+		if (!updateFollow) return res.send({ status: 'Can not Follow the User' });
+
+		return res.send({
+			status: 'User Followed Successfully',
+		});
+	} catch (error) {
+		console.log(error);
+		res.send({
+			status: 'Server Error',
+		});
+	}
+};
+
+module.exports.unFollowUser = async (req, res) => {
+	try {
+		const userId = req.user._id;
+		const followedId = req.params.id;
+		const updateFollow = await userService.unFollowUser(followedId, userId);
+		if (!updateFollow) return res.send({ status: 'Can not Follow the User' });
+
+		return res.send({
+			status: 'User Unfollowed Successfully',
+		});
+	} catch (error) {
+		console.log(error);
+		res.send({
+			status: 'Server Error',
+		});
 	}
 };

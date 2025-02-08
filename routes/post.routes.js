@@ -21,5 +21,6 @@ router.route('/feed-posts').get(ensureAuth, postController.getFeedPosts);
 
 router.route('/post-comment/:id').post(ensureAuth, postController.postComment);
 router.route('/get-comments/:id').get(ensureAuth, postController.getComments);
+router.route('/get-six-posts/:id').get(ensureAuth, postController.getSixPosts);
 
 module.exports = router;
