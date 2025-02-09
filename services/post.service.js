@@ -151,14 +151,14 @@ module.exports.getComments = async (postId, page, limit) => {
 
 module.exports.getSixPosts = async (userId) => {
 	try {
-		const foundPosts = await Post.find({
-			postBy: userId,
-		})
-			.limit(3)
+		const foundPosts = await Post.find({ postBy: userId })
+			.sort({ createdAt: -1 })
+			.limit(6)
 			.populate({
 				path: 'postBy',
 				select: 'firstName lastName userName profilePic headline',
 			});
+
 		return foundPosts;
 	} catch (error) {
 		console.log(error);
