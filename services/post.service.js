@@ -16,7 +16,10 @@ module.exports.createPost = async (data, id) => {
 
 module.exports.getAllPosts = async (id) => {
 	try {
-		const allPosts = await Post.find({ postBy: id });
+		const allPosts = await Post.find({ postBy: id }).populate({
+			path: 'postBy',
+			select: 'firstName userName lastName headline profilePic',
+		});
 		return allPosts;
 	} catch (error) {
 		console.log(error);
@@ -150,8 +153,25 @@ module.exports.getSixPosts = async (userId) => {
 	try {
 		const foundPosts = await Post.find({
 			postBy: userId,
-		}).limit(3);
+		})
+			.limit(3)
+			.populate({
+				path: 'postBy',
+				select: 'firstName lastName userName profilePic headline',
+			});
 		return foundPosts;
+	} catch (error) {
+		console.log(error);
+	}
+};
+
+module.exports.getPost = async (postId) => {
+	try {
+		const findById = await Post.findById(postId).populate({
+			path: 'postBy',
+			select: 'firstName lastName userName headline profilePic',
+		});
+		return findById;
 	} catch (error) {
 		console.log(error);
 	}

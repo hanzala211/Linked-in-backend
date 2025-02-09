@@ -13,7 +13,7 @@ router
 		postController.createPost
 	);
 
-router.route('/get-posts').get(ensureAuth, postController.getAllUserPosts);
+router.route('/get-posts/:id').get(ensureAuth, postController.getAllUserPosts);
 router.route('/like-post/:id').get(ensureAuth, postController.likePost);
 router.route('/dislike-post/:id').get(ensureAuth, postController.disLikePost);
 
@@ -22,5 +22,6 @@ router.route('/feed-posts').get(ensureAuth, postController.getFeedPosts);
 router.route('/post-comment/:id').post(ensureAuth, postController.postComment);
 router.route('/get-comments/:id').get(ensureAuth, postController.getComments);
 router.route('/get-six-posts/:id').get(ensureAuth, postController.getSixPosts);
+router.route('/get-post/:id').get(ensureAuth, postController.getPost);
 
 module.exports = router;

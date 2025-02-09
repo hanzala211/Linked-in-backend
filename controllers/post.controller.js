@@ -46,7 +46,8 @@ module.exports.createPost = async (req, res) => {
 
 module.exports.getAllUserPosts = async (req, res) => {
 	try {
-		const id = req.user._id;
+		const id = req.params.id;
+		if (!id) return res.send({ status: 'ID Not Found' });
 		const allPosts = await postService.getAllPosts(id);
 		return res.status(200).send({
 			status: 'Post Retrieved Successfully',
@@ -163,5 +164,22 @@ module.exports.getSixPosts = async (req, res) => {
 		});
 	} catch (error) {
 		console.log(error);
+		res.status(500).send({ status: 'Server Error' });
+	}
+};
+
+module.exports.getPost = async (req, res) => {
+	try {
+		const postId = req.params.id;
+		if (!postId) return res.send({ status: 'ID Not Found' });
+		const findPost = await postService.getPost(postId);
+		if (!findPost) return res.send({ status: 'Post Not Found' });
+		return res.send({
+			status: 'Post Retrieved Successfully',
+			post: findPost,
+		});
+	} catch (error) {
+		console.log(error);
+		res.send({ status: 'Server Error' });
 	}
 };
