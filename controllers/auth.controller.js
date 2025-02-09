@@ -1,9 +1,11 @@
 const authService = require('../services/auth.service');
 const userHelpers = require('../helpers/token');
+const JoiScheema = require('../validators/user.validators');
 
 module.exports.signup = async (req, res) => {
 	try {
-		const { email, userName, password } = req.body;
+		const { email, userName } = req.body;
+		const result = await JoiScheema.sign_up_validator.validateAsync(req.body);
 		const foundByEmail = await authService.readByEmail(email);
 		if (foundByEmail)
 			return res.send({ status: 'Account with this Email already exists' });
@@ -11,11 +13,11 @@ module.exports.signup = async (req, res) => {
 		if (foundByUsername)
 			return res.send({ status: 'Account with this Username already exists' });
 		const generateHashPass = await userHelpers.generateTokenForPassword(
-			password
+			result.password
 		);
 		const addData = await authService.addBasicData({
-			userName,
-			email,
+			userName: result.userName,
+			email: result.email,
 			password: generateHashPass,
 		});
 		if (addData) {
@@ -33,18 +35,19 @@ module.exports.signup = async (req, res) => {
 		console.log(error);
 		res.send({
 			status: 'Server Error',
+			message: error.details[0].message,
 		});
 	}
 };
 
 module.exports.login = async (req, res) => {
 	try {
-		const { email, password } = req.body;
-		const foundByEmail = await authService.readByEmail(email);
+		const result = await JoiScheema.log_in_validator.validateAsync(req.body);
+		const foundByEmail = await authService.readByEmail(result.email);
 		if (!foundByEmail)
 			return res.send({ status: 'Account with this Email does not exist.' });
 		const isCorrectPass = await userHelpers.comparePassword(
-			password,
+			result.password,
 			foundByEmail.password
 		);
 		if (!isCorrectPass) return res.send({ status: 'Password is Incorrect.' });
@@ -59,6 +62,7 @@ module.exports.login = async (req, res) => {
 		console.log(error);
 		res.send({
 			status: 'Server Error',
+			message: error.details[0].message,
 		});
 	}
 };
