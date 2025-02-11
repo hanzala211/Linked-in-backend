@@ -23,5 +23,15 @@ router.route('/post-comment/:id').post(ensureAuth, postController.postComment);
 router.route('/get-comments/:id').get(ensureAuth, postController.getComments);
 router.route('/get-six-posts/:id').get(ensureAuth, postController.getSixPosts);
 router.route('/get-post/:id').get(ensureAuth, postController.getPost);
+router.route('/save-post/:id').get(ensureAuth, postController.savePost);
+router.route('/unsave-post/:id').get(ensureAuth, postController.unSavePost);
+router.route('/delete-post/:id').delete(ensureAuth, postController.deletePost);
+router
+	.route('/update-post/:id')
+	.put(
+		ensureAuth,
+		uploadPictures.postProfilePic.array('image', 10),
+		postController.editPost
+	);
 
 module.exports = router;

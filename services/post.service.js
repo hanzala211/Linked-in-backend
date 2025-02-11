@@ -176,3 +176,70 @@ module.exports.getPost = async (postId) => {
 		console.log(error);
 	}
 };
+
+module.exports.savePost = async (postId, userId) => {
+	try {
+		const findAndUpdate = await User.findByIdAndUpdate(
+			userId,
+			{
+				$push: { savedPosts: postId },
+			},
+			{
+				new: true,
+			}
+		);
+		return findAndUpdate;
+	} catch (error) {
+		console.log(error);
+	}
+};
+
+module.exports.unSavePost = async (postId, userId) => {
+	try {
+		const findAndUpdate = await User.findByIdAndUpdate(
+			userId,
+			{
+				$pull: { savedPosts: postId },
+			},
+			{
+				new: true,
+			}
+		);
+		return findAndUpdate;
+	} catch (error) {
+		console.log(error);
+	}
+};
+
+module.exports.deletePost = async (postId, userId) => {
+	try {
+		const findByIdAndDelete = await Post.findByIdAndDelete(postId);
+		const updateUser = await User.findByIdAndUpdate(
+			userId,
+			{
+				$pull: { posts: postId },
+				$inc: { postsCount: -1 },
+			},
+			{
+				new: true,
+			}
+		);
+		return findByIdAndDelete;
+	} catch (error) {
+		console.log(error);
+	}
+};
+
+module.exports.updatePost = async (data, postId) => {
+	try {
+		const findAndUpdate = await Post.findByIdAndUpdate(postId, data, {
+			new: true,
+		}).populate({
+			path: 'postBy',
+			select: 'firstName lastName userName profilePic banner',
+		});
+		return findAndUpdate;
+	} catch (error) {
+		console.log(error);
+	}
+};

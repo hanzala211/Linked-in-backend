@@ -67,6 +67,13 @@ const userScheema = mongoose.Schema({
 			default: [],
 		},
 	],
+	savedPosts: [
+		{
+			type: mongoose.Schema.Types.ObjectId,
+			ref: 'Post',
+			default: [],
+		},
+	],
 	followingCount: {
 		type: Number,
 		default: 0,

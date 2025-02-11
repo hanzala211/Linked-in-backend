@@ -7,7 +7,7 @@ const router = express.Router();
 router.route('/update-profile').post(ensureAuth, userController.editProfile);
 router
 	.route('/profile-pic')
-	.post(
+	.patch(
 		ensureAuth,
 		postProfilePic.single('image'),
 		userController.updateProfilePic
@@ -15,7 +15,7 @@ router
 
 router
 	.route('/profile-banner')
-	.post(
+	.patch(
 		ensureAuth,
 		postProfileBanner.single('image'),
 		userController.updateProfileBanner
