@@ -164,3 +164,21 @@ module.exports.unFollowUser = async (req, res) => {
 		});
 	}
 };
+
+module.exports.getFollow = async (req, res) => {
+	try {
+		const userId = req.user._id;
+		const foundFollow = await userService.getFollow(userId);
+		if (!foundFollow) return res.send({ status: 'Users Not Found' });
+
+		return res.send({
+			status: 'Users Found',
+			users: foundFollow,
+		});
+	} catch (error) {
+		console.log(error);
+		res.send({
+			status: 'Server Error',
+		});
+	}
+};

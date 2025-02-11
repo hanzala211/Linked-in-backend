@@ -30,6 +30,25 @@ const postSchema = mongoose.Schema(
 			type: Number,
 			default: 0,
 		},
+		isArticle: {
+			type: Boolean,
+			default: false,
+		},
+		articleContent: {
+			type: String,
+			required: false,
+		},
+		title: {
+			type: String,
+			required: false,
+		},
+		mentions: [
+			{
+				type: mongoose.Schema.Types.ObjectId,
+				ref: 'User',
+				required: false,
+			},
+		],
 		comments: [
 			{
 				user: {

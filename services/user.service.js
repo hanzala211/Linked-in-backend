@@ -110,3 +110,27 @@ module.exports.unFollowUser = async (followedId, userId) => {
 		console.log(error);
 	}
 };
+
+module.exports.getFollow = async (userId) => {
+	try {
+		const foundUser = await User.findById(userId)
+			.select('followers following -_id')
+			.populate(
+				'followers following',
+				'userName firstName profilePic lastName headline'
+			);
+		if (foundUser) {
+			const allUsers = [...foundUser.followers, ...foundUser.following];
+
+			const uniqueUsers = allUsers.filter(
+				(item, index, arr) =>
+					index ===
+					arr.findIndex((other) => other._id.toString() === item._id.toString())
+			);
+			return uniqueUsers;
+		}
+		return foundUser;
+	} catch (error) {
+		console.log(error);
+	}
+};

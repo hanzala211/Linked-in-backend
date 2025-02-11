@@ -29,5 +29,6 @@ router.route('/remove-banner').delete(ensureAuth, userController.removeBanner);
 
 router.route('/follow-user/:id').get(ensureAuth, userController.followUser);
 router.route('/unfollow-user/:id').get(ensureAuth, userController.unFollowUser);
+router.route('/get-follow').get(ensureAuth, userController.getFollow);
 
 module.exports = router;

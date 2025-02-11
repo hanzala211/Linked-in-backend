@@ -243,3 +243,16 @@ module.exports.updatePost = async (data, postId) => {
 		console.log(error);
 	}
 };
+
+module.exports.createArticle = async (data, id) => {
+	try {
+		const createPost = await Post.create(data);
+		await User.findByIdAndUpdate(id, {
+			$push: { posts: createPost._id },
+			$inc: { postsCount: 1 },
+		});
+		return createPost;
+	} catch (error) {
+		console.log(error);
+	}
+};

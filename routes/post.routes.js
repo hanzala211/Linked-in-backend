@@ -34,4 +34,6 @@ router
 		postController.editPost
 	);
 
+router.route('/create-article').post(ensureAuth, postController.createArticle);
+
 module.exports = router;

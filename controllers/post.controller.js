@@ -275,3 +275,31 @@ module.exports.editPost = async (req, res) => {
 		res.send({ status: 'Server Error' });
 	}
 };
+
+module.exports.createArticle = async (req, res) => {
+	try {
+		const { caption, articleContent, mentions, title } = req.body;
+		const userId = req.user._id;
+
+		const createdArticle = await postService.createArticle(
+			{
+				postBy: userId,
+				caption,
+				articleContent,
+				mentions,
+				isArticle: true,
+				title,
+			},
+			userId
+		);
+
+		if (!createdArticle) return res.send({ status: 'Failed' });
+		return res.send({
+			status: 'Article Created Successfully',
+			article: createdArticle,
+		});
+	} catch (error) {
+		console.log(error);
+		res.send({ status: 'Server Error' });
+	}
+};
