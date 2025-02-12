@@ -35,5 +35,8 @@ router
 	);
 
 router.route('/create-article').post(ensureAuth, postController.createArticle);
+router
+	.route('/update-article/:id')
+	.patch(ensureAuth, postController.editArticle);
 
 module.exports = router;

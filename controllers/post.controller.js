@@ -250,7 +250,7 @@ module.exports.editPost = async (req, res) => {
 		const getPost = await postService.getPost(postId);
 		if (!getPost) return res.send({ status: 'Post Not Found' });
 		getPost.caption = caption;
-		if (imagesToRemove.length > 0) {
+		if (imagesToRemove && imagesToRemove.length > 0) {
 			getPost.imageUrls = getPost.imageUrls.filter(
 				(item) => !imagesToRemove.includes(item)
 			);
@@ -297,6 +297,23 @@ module.exports.createArticle = async (req, res) => {
 		return res.send({
 			status: 'Article Created Successfully',
 			article: createdArticle,
+		});
+	} catch (error) {
+		console.log(error);
+		res.send({ status: 'Server Error' });
+	}
+};
+
+module.exports.editArticle = async (req, res) => {
+	try {
+		const postId = req.params.id;
+		if (!postId) return res.send({ status: 'Post Not Found' });
+		const updateArticle = await postService.updateArticle(req.body, postId);
+		if (!updateArticle) return res.send({ status: 'Failed To Update' });
+
+		return res.send({
+			status: 'Article Updated Successfully',
+			article: updateArticle,
 		});
 	} catch (error) {
 		console.log(error);

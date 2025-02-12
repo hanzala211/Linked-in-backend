@@ -218,7 +218,7 @@ module.exports.unSavePost = async (postId, userId) => {
 module.exports.deletePost = async (postId, userId) => {
 	try {
 		const findByIdAndDelete = await Post.findByIdAndDelete(postId);
-		const updateUser = await User.findByIdAndUpdate(
+		await User.findByIdAndUpdate(
 			userId,
 			{
 				$pull: { posts: postId },
@@ -259,6 +259,20 @@ module.exports.createArticle = async (data, id) => {
 			$inc: { postsCount: 1 },
 		});
 		return createPost;
+	} catch (error) {
+		console.log(error);
+	}
+};
+
+module.exports.updateArticle = async (data, postId) => {
+	try {
+		const findAndUpdate = await Post.findByIdAndUpdate(postId, data, {
+			new: true,
+		}).populate({
+			path: 'postBy mentions',
+			select: 'firstName lastName userName profilePic banner',
+		});
+		return findAndUpdate;
 	} catch (error) {
 		console.log(error);
 	}
