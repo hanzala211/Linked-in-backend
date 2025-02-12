@@ -101,7 +101,7 @@ module.exports.unFollowUser = async (followedId, userId) => {
 			$pull: { following: followedId },
 			$inc: { followingCount: -1 },
 		});
-		const updateOtherUser = await User.findByIdAndUpdate(followedId, {
+		await User.findByIdAndUpdate(followedId, {
 			$pull: { followers: userId },
 			$inc: { followerCount: -1 },
 		});

@@ -17,7 +17,7 @@ module.exports.createPost = async (data, id) => {
 module.exports.getAllPosts = async (id) => {
 	try {
 		const allPosts = await Post.find({ postBy: id }).populate({
-			path: 'postBy',
+			path: 'postBy mentions',
 			select: 'firstName userName lastName headline profilePic',
 		});
 		return allPosts;
@@ -65,7 +65,11 @@ module.exports.disLikePost = async (userId, postId) => {
 module.exports.getFeedPosts = async (userId, limit) => {
 	try {
 		const findPosts = await Post.aggregate([
-			{ $match: { postBy: { $ne: userId } } },
+			{
+				$match: {
+					$and: [{ postBy: { $ne: userId } }, { isArticle: { $ne: true } }],
+				},
+			},
 			{ $sample: { size: parseInt(limit, 10) } },
 			{
 				$lookup: {
@@ -155,7 +159,7 @@ module.exports.getSixPosts = async (userId) => {
 			.sort({ createdAt: -1 })
 			.limit(6)
 			.populate({
-				path: 'postBy',
+				path: 'postBy mentions',
 				select: 'firstName lastName userName profilePic headline',
 			});
 
@@ -168,7 +172,7 @@ module.exports.getSixPosts = async (userId) => {
 module.exports.getPost = async (postId) => {
 	try {
 		const findById = await Post.findById(postId).populate({
-			path: 'postBy',
+			path: 'postBy mentions',
 			select: 'firstName lastName userName headline profilePic',
 		});
 		return findById;
@@ -224,6 +228,9 @@ module.exports.deletePost = async (postId, userId) => {
 				new: true,
 			}
 		);
+		await User.updateMany({
+			$pull: { savedPosts: postId },
+		});
 		return findByIdAndDelete;
 	} catch (error) {
 		console.log(error);
