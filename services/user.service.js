@@ -85,7 +85,7 @@ module.exports.followUser = async (followedId, userId) => {
 			$push: { following: followedId },
 			$inc: { followingCount: 1 },
 		});
-		const updateOtherUser = await User.findByIdAndUpdate(followedId, {
+		await User.findByIdAndUpdate(followedId, {
 			$push: { followers: userId },
 			$inc: { followerCount: 1 },
 		});

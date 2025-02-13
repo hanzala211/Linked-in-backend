@@ -4,7 +4,7 @@ const { ensureAuth } = require('../middlewares/auth.mw');
 const { postProfilePic, postProfileBanner } = require('../middlewares/upload');
 const router = express.Router();
 
-router.route('/update-profile').post(ensureAuth, userController.editProfile);
+router.route('/update').post(ensureAuth, userController.editProfile);
 router
 	.route('/profile-pic')
 	.patch(
@@ -14,7 +14,7 @@ router
 	);
 
 router
-	.route('/profile-banner')
+	.route('/banner')
 	.patch(
 		ensureAuth,
 		postProfileBanner.single('image'),
@@ -22,13 +22,13 @@ router
 	);
 
 router
-	.route('/remove-profile-pic')
+	.route('/profile-pic')
 	.delete(ensureAuth, userController.removeProfilePic);
 
-router.route('/remove-banner').delete(ensureAuth, userController.removeBanner);
+router.route('/banner').delete(ensureAuth, userController.removeBanner);
 
-router.route('/follow-user/:id').get(ensureAuth, userController.followUser);
-router.route('/unfollow-user/:id').get(ensureAuth, userController.unFollowUser);
-router.route('/get-follow').get(ensureAuth, userController.getFollow);
+router.route('/follow/:id').post(ensureAuth, userController.followUser);
+router.route('/unfollow/:id').post(ensureAuth, userController.unFollowUser);
+router.route('/follow').get(ensureAuth, userController.getFollow);
 
 module.exports = router;

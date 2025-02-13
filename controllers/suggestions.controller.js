@@ -30,7 +30,7 @@ module.exports.getIndustrySuggestions = async (req, res) => {
 			id
 		);
 		if (!findSuggestions)
-			return res.send({ status: 'Users Not Found with this su ggestions' });
+			return res.send({ status: 'Users Not Found with this suggestions' });
 
 		res.send({
 			status: 'Users Found',
