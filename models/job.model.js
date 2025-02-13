@@ -4,36 +4,43 @@ const jobSchema = mongoose.Schema(
 	{
 		title: {
 			type: String,
-			default: '',
+			required: true,
 		},
 		jobContent: {
 			type: String,
-			default: '',
+			required: true,
 		},
 		employmentType: {
 			type: String,
-			default: '',
+			required: true,
 		},
 		industry: {
 			type: String,
-			default: '',
+			required: true,
 		},
 		appliedCount: {
 			type: Number,
 			default: 0,
 		},
-		location: {
+		region: {
 			type: String,
-			default: '',
+			required: true,
+		},
+		country: {
+			type: String,
+			required: true,
+		},
+		jobBy: {
+			type: mongoose.Schema.Types.ObjectId,
+			ref: 'User',
 		},
 		company: {
 			companyName: {
 				type: String,
-				default: '',
+				required: true,
 			},
 			companyImg: {
 				type: String,
-				default: '',
 			},
 		},
 	},

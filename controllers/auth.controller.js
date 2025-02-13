@@ -1,6 +1,6 @@
 const authService = require('../services/auth.service');
 const userHelpers = require('../helpers/token');
-const JoiScheema = require('../validators/user.validators');
+const JoiScheema = require('../validation/user.schema');
 
 module.exports.signup = async (req, res) => {
 	try {
@@ -32,11 +32,14 @@ module.exports.signup = async (req, res) => {
 			status: 'Fail',
 		});
 	} catch (error) {
-		console.log(error);
-		res.send({
-			status: 'Server Error',
-			message: error.details[0].message,
-		});
+		if (error.isJoi) {
+			return res.status(400).json({
+				status: 'Validation Error',
+				errors: error.details.map((err) => err.message),
+			});
+		}
+		console.error(error);
+		return res.status(500).json({ status: 'Server Error' });
 	}
 };
 
@@ -59,11 +62,14 @@ module.exports.login = async (req, res) => {
 			token,
 		});
 	} catch (error) {
-		console.log(error);
-		res.send({
-			status: 'Server Error',
-			message: error.details[0].message,
-		});
+		if (error.isJoi) {
+			return res.status(400).json({
+				status: 'Validation Error',
+				errors: error.details.map((err) => err.message),
+			});
+		}
+		console.error(error);
+		return res.status(500).json({ status: 'Server Error' });
 	}
 };
 
