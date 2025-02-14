@@ -49,6 +49,9 @@ const userScheema = mongoose.Schema({
 		type: String,
 		default: null,
 	},
+	pdfLink: {
+		type: String,
+	},
 	followers: [
 		{
 			type: mongoose.Schema.Types.ObjectId,
@@ -56,6 +59,17 @@ const userScheema = mongoose.Schema({
 			default: [],
 		},
 	],
+	resume: {
+		type: {
+			resumeLink: {
+				type: String,
+			},
+			resumeName: {
+				type: String,
+			},
+		},
+		default: null,
+	},
 	followerCount: {
 		type: Number,
 		default: 0,

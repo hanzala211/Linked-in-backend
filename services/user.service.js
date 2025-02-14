@@ -134,3 +134,11 @@ module.exports.getFollow = async (userId) => {
 		console.log(error);
 	}
 };
+
+module.exports.uploadPdfToUser = async (uploadPDF, userId) => {
+	try {
+		await User.findByIdAndUpdate(userId, { resume: uploadPDF });
+	} catch (error) {
+		console.log(error);
+	}
+};

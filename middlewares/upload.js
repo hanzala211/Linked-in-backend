@@ -44,4 +44,14 @@ module.exports = {
 			},
 		}),
 	}),
+	uploadPDF: multer({
+		storage: new CloudinaryStorage({
+			cloudinary,
+			params: async (req, file) => ({
+				folder: `linked-in/${req.user.email}/pdf`,
+				resource_type: 'raw',
+				public_id: file.originalname,
+			}),
+		}),
+	}),
 };

@@ -1,5 +1,8 @@
 const JoiSchema = require('../validation/job.schema');
 const jobService = require('../services/job.service');
+const transporter = require('../configs/mailer');
+const generateEmailTemplate = require('../helpers/emailTemplate');
+const userService = require('../services/user.service');
 
 module.exports.createJob = async (req, res) => {
 	try {
@@ -68,5 +71,45 @@ module.exports.getJob = async (req, res) => {
 	} catch (error) {
 		console.log(error);
 		return res.status(500).send({ status: 'Server Error' });
+	}
+};
+
+module.exports.applyToJob = async (req, res) => {
+	try {
+		const resumePDF = req.file && req.file.path;
+		const jobId = req.params.id;
+		const { recieverEmail, number, email, title } = req.body;
+		const { firstName, lastName, _id, resume } = req.user;
+
+		const generatedTemplate = generateEmailTemplate({
+			firstName,
+			lastName,
+			email,
+			phone: number,
+			link: resumePDF || resume.resumeLink,
+			title,
+		});
+
+		await transporter.sendMail({
+			to: recieverEmail,
+			subject: 'Applied User',
+			html: generatedTemplate,
+		});
+
+		if (req.file) {
+			await userService.uploadPdfToUser(
+				{
+					resumeLink: resumePDF,
+					resumeName: req.file.originalname,
+				},
+				_id
+			);
+		}
+		await jobService.updateCount(jobId);
+		return res.send({
+			status: 'Applied Successfully',
+		});
+	} catch (error) {
+		console.log(error);
 	}
 };

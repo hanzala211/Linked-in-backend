@@ -54,3 +54,14 @@ module.exports.getJob = async (jobId) => {
 		console.log(error);
 	}
 };
+
+module.exports.updateCount = async (jobId) => {
+	try {
+		const findAndUpdate = await Job.findByIdAndUpdate(jobId, {
+			$inc: { appliedCount: 1 },
+		});
+		return findAndUpdate;
+	} catch (error) {
+		console.log(error);
+	}
+};
