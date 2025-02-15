@@ -1,4 +1,5 @@
 const Job = require('../models/job.model');
+const User = require('../models/user.model');
 
 module.exports.createJob = async (data) => {
 	try {
@@ -59,6 +60,28 @@ module.exports.updateCount = async (jobId) => {
 	try {
 		const findAndUpdate = await Job.findByIdAndUpdate(jobId, {
 			$inc: { appliedCount: 1 },
+		});
+		return findAndUpdate;
+	} catch (error) {
+		console.log(error);
+	}
+};
+
+module.exports.saveJob = async (userId, jobId) => {
+	try {
+		const findAndUpdate = await User.findByIdAndUpdate(userId, {
+			$push: { jobs: jobId },
+		});
+		return findAndUpdate;
+	} catch (error) {
+		console.log(error);
+	}
+};
+
+module.exports.unSaveJob = async (userId, jobId) => {
+	try {
+		const findAndUpdate = await User.findByIdAndUpdate(userId, {
+			$pull: { jobs: jobId },
 		});
 		return findAndUpdate;
 	} catch (error) {

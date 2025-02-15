@@ -111,5 +111,36 @@ module.exports.applyToJob = async (req, res) => {
 		});
 	} catch (error) {
 		console.log(error);
+		return res.status(500).send({ status: 'Server Error' });
+	}
+};
+
+module.exports.saveJob = async (req, res) => {
+	try {
+		const jobId = req.params.id;
+		const userId = req.user._id;
+		await jobService.saveJob(userId, jobId);
+
+		return res.send({
+			status: 'Job Saved Successfully',
+		});
+	} catch (error) {
+		console.log(error);
+		return res.status(500).send({ status: 'Server Error' });
+	}
+};
+
+module.exports.unSaveJob = async (req, res) => {
+	try {
+		const jobId = req.params.id;
+		const userId = req.user._id;
+		await jobService.unSaveJob(userId, jobId);
+
+		return res.send({
+			status: 'Job Unsaved Successfully',
+		});
+	} catch (error) {
+		console.log(error);
+		return res.status(500).send({ status: 'Server Error' });
 	}
 };

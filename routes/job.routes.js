@@ -15,5 +15,7 @@ router.post(
 	uploadPDF.single('file'),
 	jobController.applyToJob
 );
+router.patch('/save/:id', ensureAuth, jobController.saveJob);
+router.patch('/unsave/:id', ensureAuth, jobController.unSaveJob);
 
 module.exports = router;

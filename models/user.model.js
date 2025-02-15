@@ -162,6 +162,13 @@ const userScheema = mongoose.Schema({
 		type: Number,
 		default: 0,
 	},
+	jobs: [
+		{
+			type: mongoose.Schema.Types.ObjectId,
+			ref: 'Job',
+			default: [],
+		},
+	],
 });
 
 module.exports = mongoose.model('User', userScheema);
