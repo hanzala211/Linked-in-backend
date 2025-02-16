@@ -277,3 +277,20 @@ module.exports.updateArticle = async (data, postId) => {
 		console.log(error);
 	}
 };
+
+module.exports.getSavedPosts = async (userId) => {
+	try {
+		const foundSaves = await User.findById(userId)
+			.select('savedPosts -_id')
+			.populate({
+				path: 'savedPosts',
+				populate: {
+					path: 'postBy',
+					select: 'firstName lastName headline profilePic userName',
+				},
+			});
+		return foundSaves ? [...foundSaves.savedPosts] : foundSaves;
+	} catch (error) {
+		console.log(error);
+	}
+};

@@ -18,6 +18,7 @@ router.route('/like/:id').post(ensureAuth, postController.likePost);
 router.route('/dislike/:id').post(ensureAuth, postController.disLikePost);
 
 router.route('/feed').get(ensureAuth, postController.getFeedPosts);
+router.get('/saved-posts', ensureAuth, postController.getSavedPosts);
 
 router.route('/comment/:id').post(ensureAuth, postController.postComment);
 router.route('/comments/:id').get(ensureAuth, postController.getComments);

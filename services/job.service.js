@@ -15,7 +15,10 @@ module.exports.getJobs = async (limit, page) => {
 		const skipDocs = (page - 1) * limit;
 		const jobsCount = await Job.countDocuments();
 		const foundJobs = await Job.find()
-			.populate('jobBy', 'userName firstName lastName profilePic email')
+			.populate(
+				'jobBy',
+				'userName firstName lastName profilePic email headline'
+			)
 			.limit(limit)
 			.skip(skipDocs);
 		return {
@@ -37,7 +40,10 @@ module.exports.searchJobs = async (searchQurey) => {
 				{ country: { $regex: searchQurey, $options: 'i' } },
 				{ region: { $regex: searchQurey, $options: 'i' } },
 			],
-		}).populate('jobBy', 'userName firstName lastName profilePic email');
+		}).populate(
+			'jobBy',
+			'userName firstName lastName profilePic email headline'
+		);
 		return foundJobs;
 	} catch (error) {
 		console.log(error);
@@ -48,7 +54,7 @@ module.exports.getJob = async (jobId) => {
 	try {
 		const foundJob = await Job.findById(jobId).populate(
 			'jobBy',
-			'userName firstName lastName profilePic email'
+			'userName firstName lastName profilePic email headline'
 		);
 		return foundJob;
 	} catch (error) {
@@ -84,6 +90,26 @@ module.exports.unSaveJob = async (userId, jobId) => {
 			$pull: { jobs: jobId },
 		});
 		return findAndUpdate;
+	} catch (error) {
+		console.log(error);
+	}
+};
+
+module.exports.getSavedJobs = async (userId) => {
+	try {
+		const foundSaves = await User.findById(userId)
+			.select('jobs -_id')
+			.populate('jobs');
+		return foundSaves ? [...foundSaves.jobs] : foundSaves;
+	} catch (error) {
+		console.log(error);
+	}
+};
+
+module.exports.getPostedJobs = async (userId) => {
+	try {
+		const foundJobs = await Job.find({ jobBy: userId });
+		return foundJobs;
 	} catch (error) {
 		console.log(error);
 	}

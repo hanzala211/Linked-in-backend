@@ -144,3 +144,33 @@ module.exports.unSaveJob = async (req, res) => {
 		return res.status(500).send({ status: 'Server Error' });
 	}
 };
+
+module.exports.getSavedJobs = async (req, res) => {
+	try {
+		const userId = req.user._id;
+		const foundJobs = await jobService.getSavedJobs(userId);
+		if (!foundJobs) return res.send({ status: 'Jobs Not Found' });
+		return res.send({
+			status: 'Saved Jobs Found',
+			jobs: foundJobs,
+		});
+	} catch (error) {
+		console.log(error);
+		return res.status(500).send({ status: 'Server Error' });
+	}
+};
+
+module.exports.getPostedJobs = async (req, res) => {
+	try {
+		const userId = req.user._id;
+		const foundJobs = await jobService.getPostedJobs(userId);
+		if (!foundJobs) return res.send({ status: 'Jobs Not Found' });
+		return res.send({
+			status: 'Jobs Found',
+			jobs: foundJobs,
+		});
+	} catch (error) {
+		console.log(error);
+		return res.status(500).send({ status: 'Server Error' });
+	}
+};

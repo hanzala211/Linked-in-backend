@@ -320,3 +320,18 @@ module.exports.editArticle = async (req, res) => {
 		res.send({ status: 'Server Error' });
 	}
 };
+
+module.exports.getSavedPosts = async (req, res) => {
+	try {
+		const userId = req.user._id;
+		const savePosts = await postService.getSavedPosts(userId);
+		if (!savePosts) return res.status(404).send({ status: 'Posts Not Found' });
+		return res.send({
+			status: 'Posts Found',
+			posts: savePosts,
+		});
+	} catch (error) {
+		console.log(error);
+		res.send({ status: 'Server Error' });
+	}
+};
