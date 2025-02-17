@@ -18,6 +18,7 @@ router.patch('/save/:id', ensureAuth, jobController.saveJob);
 router.patch('/unsave/:id', ensureAuth, jobController.unSaveJob);
 router.get('/saved-jobs', ensureAuth, jobController.getSavedJobs);
 router.get('/posted-jobs', ensureAuth, jobController.getPostedJobs);
+router.delete('/:id', ensureAuth, jobController.deleteJob);
 router.get('/:id', ensureAuth, jobController.getJob);
 
 module.exports = router;

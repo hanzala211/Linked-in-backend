@@ -174,3 +174,15 @@ module.exports.getPostedJobs = async (req, res) => {
 		return res.status(500).send({ status: 'Server Error' });
 	}
 };
+
+module.exports.deleteJob = async (req, res) => {
+	try {
+		const jobId = req.params.id;
+		if (!jobId) return res.status(400).send({ status: 'ID Not Found' });
+		await jobService.deleteJob(jobId);
+		return res.send({ status: 'Job Deleted Successfully' });
+	} catch (error) {
+		console.log(error);
+		return res.status(500).send({ status: 'Server Error' });
+	}
+};

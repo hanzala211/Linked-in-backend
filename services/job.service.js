@@ -114,3 +114,11 @@ module.exports.getPostedJobs = async (userId) => {
 		console.log(error);
 	}
 };
+
+module.exports.deleteJob = async (jobId) => {
+	try{
+		await Job.findByIdAndDelete(jobId)
+	}catch(error){
+		console.log(error)
+	}
+}
