@@ -133,7 +133,7 @@ module.exports.getComments = async (postId, page, limit) => {
 		const posts = await Post.findById(postId)
 			.populate({
 				path: 'comments.user',
-				select: 'firstName lastName profilePic headline',
+				select: 'firstName lastName profilePic headline userName',
 			})
 			.select('comments');
 
