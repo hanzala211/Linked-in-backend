@@ -169,6 +169,14 @@ const userScheema = mongoose.Schema({
 			default: [],
 		},
 	],
+	forgotPasswordCode: {
+		type: String,
+		default: null,
+	},
+	forgotPasswordTime: {
+		type: Number,
+		default: null,
+	},
 });
 
 module.exports = mongoose.model('User', userScheema);

@@ -61,3 +61,12 @@ module.exports.relatedSearch = async (search) => {
 		console.error(error);
 	}
 };
+
+module.exports.updateForgetItems = async (email, data) => {
+	try {
+		const findAndUpdate = await User.updateOne({ email }, data);
+		return findAndUpdate;
+	} catch (error) {
+		console.log(error);
+	}
+};

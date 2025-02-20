@@ -1,6 +1,8 @@
 const authService = require('../services/auth.service');
 const userHelpers = require('../helpers/token');
 const JoiScheema = require('../validation/user.schema');
+const crypto = require('crypto');
+const transporter = require('../configs/mailer');
 
 module.exports.signup = async (req, res) => {
 	try {
@@ -126,6 +128,57 @@ module.exports.searchUser = async (req, res) => {
 			status: 'Success',
 			data: foundUsers,
 		});
+	} catch (error) {
+		console.log(error);
+		res.send({
+			status: 'Server Error',
+		});
+	}
+};
+
+module.exports.forgetPassword = async (req, res) => {
+	try {
+		const { email } = req.body;
+		const readByEmail = await authService.readByEmail(email);
+		if (!readByEmail)
+			return res.send({ status: 'User Not Found with this Email' });
+		const code = crypto.randomBytes(3).toString('hex');
+		const timeForExpiry = Date.now() + 60 * 60 * 1000;
+		const updateForgotPass = await authService.updateForgetItems(email, {
+			forgotPasswordCode: code,
+			forgotPasswordTime: timeForExpiry,
+		});
+		await transporter.sendMail({
+			to: email,
+			subject: 'Password Rest Code',
+			text: `Your Password Reset Code is ${code}`,
+		});
+		return res.send({
+			status: 'Code Send Successfully',
+		});
+	} catch (error) {
+		console.log(error);
+		res.send({
+			status: 'Server Error',
+		});
+	}
+};
+
+module.exports.resetPassword = async (req, res) => {
+	try {
+		const { code, resetPass, email } = req.body;
+		const readByEmail = await authService.readByEmail(email);
+		if (Date.now() > readByEmail.forgotPasswordTime)
+			return res.send({ status: 'Code has Expired' });
+		if (code !== readByEmail.forgotPasswordCode)
+			return res.send({ status: 'Code is Not Valid' });
+		const hashedPassword = await userHelpers.generateTokenForPassword(
+			resetPass
+		);
+		const updateThePass = await authService.updateForgetItems(email, {
+			password: hashedPassword,
+		});
+		return res.send({ status: 'Password Updated Successfully' });
 	} catch (error) {
 		console.log(error);
 		res.send({
