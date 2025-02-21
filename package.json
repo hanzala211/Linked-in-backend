@@ -7,6 +7,8 @@
 		"start": "nodemon app.js"
 	},
 	"dependencies": {
+		"@aws-sdk/client-s3": "^3.750.0",
+		"@aws-sdk/s3-request-presigner": "^3.750.0",
 		"axios": "^1.7.9",
 		"bcryptjs": "^2.4.3",
 		"cloudinary": "^1.41.3",
