@@ -84,32 +84,32 @@ module.exports.applyToJob = async (req, res) => {
 		const jobId = req.params.id;
 		const { recieverEmail, number, email, title } = req.body;
 		const { firstName, lastName, _id, resume } = req.user;
-		let pdfKey;
-		console.log(resumePDF);
+		let pdfKey = resume?.resumeLink;
 
 		if (resumePDF) {
 			pdfKey = `/pdf/${email}${resumePDF.originalname}${crypto
 				.randomBytes(4)
 				.toString('hex')}`;
 
-			const params = {
+			const uploadParams = {
 				Bucket: process.env.S3_BUCKET_NAME,
 				Key: pdfKey,
 				Body: resumePDF.buffer,
 				ContentType: resumePDF.mimetype,
 			};
 
-			const putCommand = new PutObjectCommand(params);
-			await s3Client.send(putCommand);
-			await userService.uploadPdfToUser(
+			const putCommand = new PutObjectCommand(uploadParams);
+			const uploadPromise = s3Client.send(putCommand);
+
+			const updateUserPromise = userService.uploadPdfToUser(
 				{
 					resumeLink: pdfKey,
 					resumeName: resumePDF.originalname,
 				},
 				_id
 			);
-		} else {
-			pdfKey = resume.resumeLink;
+
+			await Promise.all([uploadPromise, updateUserPromise]);
 		}
 
 		const getObjectParams = {
@@ -118,6 +118,7 @@ module.exports.applyToJob = async (req, res) => {
 		};
 		const command = new GetObjectCommand(getObjectParams);
 		const url = await getSignedUrl(s3Client, command);
+
 		const generatedTemplate = generateEmailTemplate({
 			firstName,
 			lastName,
@@ -127,19 +128,21 @@ module.exports.applyToJob = async (req, res) => {
 			title,
 		});
 
-		await transporter.sendMail({
+		const emailPromise = transporter.sendMail({
 			to: recieverEmail,
 			subject: 'Applied User',
 			html: generatedTemplate,
 		});
 
-		await jobService.updateCount(jobId);
+		const updateJobPromise = jobService.updateCount(jobId);
+
+		await Promise.all([emailPromise, updateJobPromise]);
 
 		return res.send({
 			status: 'Applied Successfully',
 		});
 	} catch (error) {
-		console.log(error);
+		console.error(error);
 		return res.status(500).send({ status: 'Server Error' });
 	}
 };
